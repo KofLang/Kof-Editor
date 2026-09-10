@@ -76,11 +76,16 @@ kofRun(String path, String target): String {
     }
     var runDir = "/tmp/kof-editor-run"
     Directory(runDir).createDirectories()
-    Directory(runDir).list()
-    var copy = process.run("sh", "-c", "rm -f " + runDir + "/*.kf && cp " + path + " " + runDir + "/")
-    if (copy.exitCode != 0) {
-        return "{\"stdout\":\"\",\"stderr\":\"" + escapeJson(copy.stderr) + "\",\"exitCode\":" + copy.exitCode + "}"
+    for (var f in Directory(runDir).list()) {
+        if (f.endsWith(".kf")) {
+            File(runDir + "/" + f).delete()
+        }
     }
+    var content = File(path).readText()
+    if (content == null) {
+        return "{\"stdout\":\"\",\"stderr\":\"falha ao ler " + escapeJson(path) + "\",\"exitCode\":1}"
+    }
+    File(runDir + "/" + name).writeText(content)
     var r = process.run("kof", "run", runDir + "/" + name, "--target", target)
     return "{\"stdout\":\"" + escapeJson(r.stdout) + "\",\"stderr\":\"" + escapeJson(r.stderr) +
         "\",\"exitCode\":" + r.exitCode + "}"
