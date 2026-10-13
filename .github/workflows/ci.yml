@@ -9,11 +9,17 @@ on:
 jobs:
   check:
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        kof:
+          - kof-0.2.6-beta-linux-x86_64/kof-0.2.5-beta-linux-x86_64.tar.gz
+          - kof-0.6.4-linux-x86_64/kof-0.6.4-linux-x86_64.tar.gz
     steps:
       - uses: actions/checkout@v4
       - name: Install kof
         run: |
-          curl -L https://github.com/KofLang/Kof4j/releases/download/kof-0.2.6-beta-linux-x86_64/kof-0.2.5-beta-linux-x86_64.tar.gz -o kof.tar.gz
+          curl -L https://github.com/KofLang/Kof4j/releases/download/${{ matrix.kof }} -o kof.tar.gz
           KOFDIR=$(tar tzf kof.tar.gz | head -1 | cut -d/ -f1)
           tar xzf kof.tar.gz
           echo "$PWD/$KOFDIR/bin" >> "$GITHUB_PATH"

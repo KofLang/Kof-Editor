@@ -48,7 +48,15 @@ diagList(String code, List<Token> tokens): String {
     return out + "]"
 }
 
-readDoc(String path): String {
+readTextOrEmpty(String path): String {
+    var text = File(path).readText()
+    if (text != null) {
+        return text
+    }
+    return ""
+}
+
+readDoc(String path): String? {
     return File(path).readText()
 }
 
@@ -120,7 +128,7 @@ gitBranch(String dir): String {
     if (!File(headPath).exists()) {
         return ""
     }
-    var head = File(headPath).readText()
+    var head = readTextOrEmpty(headPath)
     if (head.startsWith("ref: refs/heads/")) {
         return head.substring(16).trim()
     }
@@ -158,7 +166,7 @@ dirList(String path): String {
 }
 
 searchInFile(String path, String term): String {
-    var text = File(path).readText()
+    var text = readTextOrEmpty(path)
     var out = ""
     var from = 0
     var first = true

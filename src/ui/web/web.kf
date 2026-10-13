@@ -1900,7 +1900,7 @@ pickFolder(): String {
     return ""
 }
 
-handle(String method, String path, String body): String {
+handle(String method, String path, String body): String? {
     if (method == "GET" && path == "/") {
         return pageHtml()
     }
